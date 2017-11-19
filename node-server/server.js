@@ -8,6 +8,8 @@ var app = express();
 // It has OSC 'emitting' and 'recieving' functionality
 var osc = require('node-osc');
 
+var rhythms = require('./scripts/rhythms.js');
+
 // load up index.html with ejs
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
@@ -28,20 +30,19 @@ var io = require('socket.io')(server);
 
 // Connect our osc listener to 0.0.0.0:9999,
 // where our patch is emitting events
-var oscServer = new osc.Server(9999, '0.0.0.0');
+var oscServer = new osc.Server(9997, '127.0.0.1');
 
 // when socket.io is connected, listen for osc messages
 io.on('connection', function(socket) {
   oscServer.on('message', function (msg, rinfo) {
     // when a message is recieved, http GET a randomly generated
     // user JSON blob
-    request('https://randomuser.me/api/', function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        // we just need the picture url string
-        var picUrl = JSON.parse(body).results[0].user.picture.medium;
-        // emit event to front end and send over url
-        io.emit('supguys', picUrl);
-      }
-    })
+    if(msg[0].indexOf('triggerRhythm') > -1){
+      let rhythmIndex = msg[0].split('triggerRhythm')[1]
+      rhythms.setAllowedRhythm(rhythmIndex, msg[1])
+      console.log(rhythms.allowedRhythms)
+    }
+    // rhythms
+    // console.log(msg)
   })
 })

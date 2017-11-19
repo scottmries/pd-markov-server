@@ -23,6 +23,9 @@
     }
 
     // lets listen for socket event here
+    socket.on('triggerRhythm2', function(val) {
+      console.log('triggerRhythm2', val)
+    })
     socket.on('supguys', function(picUrl) {
 
       // and when that event fires, lets do some dom manipulation
