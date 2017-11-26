@@ -31,16 +31,23 @@ var io = require('socket.io')(server);
 // Connect our osc listener to 0.0.0.0:9999,
 // where our patch is emitting events
 var oscServer = new osc.Server(9997, '127.0.0.1');
+var oscClient = new osc.Client('127.0.0.1', 9998);
 
 // when socket.io is connected, listen for osc messages
 io.on('connection', function(socket) {
+  console.log('connected')
+  rhythms.initialize()
   oscServer.on('message', function (msg, rinfo) {
     // when a message is recieved, http GET a randomly generated
     // user JSON blob
+    console.log(msg)
     if(msg[0].indexOf('triggerRhythm') > -1){
       let rhythmIndex = msg[0].split('triggerRhythm')[1]
       rhythms.setAllowedRhythm(rhythmIndex, msg[1])
-      console.log(rhythms.allowedRhythms)
+      oscClient.send('/world', rhythms.print(), function () {
+        console.log('sent hello to /world')
+
+      })
     }
     // rhythms
     // console.log(msg)
