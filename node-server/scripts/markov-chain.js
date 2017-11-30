@@ -55,6 +55,7 @@ class MarkovChain {
       const {element: next} = object.filter((el) => throw >= el.includeMinimum && < el.exclusiveMaximum)
       // remove the array's first element and append the next one to the end
       this.elements.shift().push(next)
+      return next
     }
   }
 }
