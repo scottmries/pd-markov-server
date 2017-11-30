@@ -52,7 +52,7 @@ class MarkovChain {
       this.lastRow.map((el) => object = object[el])
       const throw = Math.random()
       // object should be an array at this point
-      const {element: next} = object.filter((el) => throw >= el.includeMinimum && < el.exclusiveMaximum)
+      const {element: next} = object.filter((el) => throw >= el.inclusiveMinimum && < el.exclusiveMaximum)
       // remove the array's first element and append the next one to the end
       this.elements.shift().push(next)
       return next
