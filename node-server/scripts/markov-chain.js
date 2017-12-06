@@ -5,6 +5,10 @@ exports.MarkovChain = class {
     this.lastRow = new Array()
     this.generateMarkovMatrix()
     // this.generateProbabilities()
+    this.state = new Array(this.order)
+    for ( let i = 0; i < this.order; i++) {
+      this.state[i] = this.elements[Math.floor(Math.random() * (this.elements.length))]
+    }
   }
 
   generateMarkovMatrix() {
