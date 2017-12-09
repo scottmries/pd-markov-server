@@ -9,6 +9,10 @@ exports.MarkovChain = class {
     for ( let i = 0; i < this.order; i++) {
       this.state[i] = this.elements[Math.floor(Math.random() * (this.elements.length))]
     }
+    this.next
+    for ( let i = 0; i < 1000; i++) {
+      console.log(this.next)
+    }
   }
 
   generateMarkovMatrix() {
@@ -18,7 +22,7 @@ exports.MarkovChain = class {
 
   generateStructureLevel(elements, n) {
     let obj = {}
-    elements.map((el) => obj[el] = n === 1 ? Math.random() : this.generateStructureLevel(elements, n - 1))
+    elements.map((el) => obj[el] = n === 0 ? Math.random() : this.generateStructureLevel(elements, n - 1))
     return obj
   }
 
@@ -81,18 +85,25 @@ exports.MarkovChain = class {
   }
 
   get next() {
-    if (this.lastRow.length < this.order) {
-      this.lastRow.push(this.elements[parseInt(Math.random() * (this.elements.length - 1))])
-    } else {
-      let object = this.matrix
-      this.lastRow.map((el) => object = object[el])
-      const toss = Math.random()
-      // object should be an array at this point
-      const {element: next} = object.filter((el) => toss >= el.inclusiveMinimum && toss < el.exclusiveMaximum)
-      // remove the array's first element and append the next one to the end
-      this.elements.shift().push(next)
-      return next
-    }
+    let submatrix = this.matrix
+    let next
+    let toss = Math.random()
+    this.state.map((order, index) => {
+      if (index  < this.order - 1) {
+        submatrix = submatrix[order]
+      } else {
+        let values = submatrix[order]
+        values.map((value) => {
+          if (toss >= value.minimum && toss < value.maximum) {
+            next = value.element
+            this.state.shift()
+            this.state.push(next)
+            console.log('state', this.state)
+          }
+        })
+      }
+    })
+    return next
   }
 }
 
